@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QA as Cosplay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&amp;family=Fraunces:opsz,wght@9..144,600..900&amp;family=DM+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   The player and the character · SE Quality Meetup
+   Style: Moss & neon (moss paper, forest ink, poppy accents)
+   Keys: → Space click = next · ← = back · N = notes · E = edit
+         Ctrl+S = save · F = fullscreen · Home/End
+   Sunburst frames = photo still to come. Violet dashed = still to fill.
+   ============================================================ */
+:root {
+  --paper: #EEF1E2; --paper2: #E2E8D2; --ink: #1F3328; --ink2: #4A5E52; --card: #FFFDF6;
+  --pink: #E8508F; --gold: #F5B83D; --mint: #3CC4A0; --violet: #8A63D2; --restmint: #A8E3CF;
+  /* engine chrome uses these names */
+  --moss: #E8508F; --river: #8A63D2;
+  --head: "Fraunces", Georgia, serif;
+  --body: "Atkinson Hyperlegible", system-ui, sans-serif;
+  --mono: "DM Mono", ui-monospace, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #14211A; }
+body { font-family: var(--body); -webkit-font-smoothing: antialiased; }
+
+/* ---------- stage ---------- */
+.stage { position: absolute; left: 50%; top: 50%; width: 1600px; height: 900px; transform-origin: center; }
+.slide { position: absolute; inset: 0; overflow: hidden; background: var(--paper); color: var(--ink);
+  opacity: 0; pointer-events: none; transition: opacity .5s ease; }
+.slide.active { opacity: 1; pointer-events: auto; }
+.slide.stripes { background: repeating-linear-gradient(90deg, rgba(60,196,160,.11) 0 48px, transparent 48px 96px), var(--paper); }
+.slide.mint { background: var(--restmint); }
+.slide .notes { display: none; }
+.f { opacity: 0; transition: opacity .5s ease, transform .5s ease; }
+.f.on { opacity: 1; }
+.abs { position: absolute; }
+
+/* ---------- type ---------- */
+.h { font-family: var(--head); font-weight: 800; letter-spacing: -.02em; line-height: .95; }
+.sub { font-family: var(--head); font-weight: 600; line-height: 1.15; color: var(--ink2); }
+.say { font: italic 34px/1.3 var(--body); color: var(--ink2); }
+.src { font: 16px/1.4 var(--body); color: var(--ink2); }
+.colhead { font: 700 20px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; padding-bottom: 14px; border-bottom: 6px solid currentColor; }
+.item { margin-top: 20px; font: 600 34px/1.2 var(--head); color: var(--ink); }
+
+/* ribbon banner (kickers) */
+.ribbon { display: inline-block; padding: 12px 34px; font: 700 18px/1 var(--body); letter-spacing: .16em; text-transform: uppercase;
+  background: var(--card); color: var(--ink); border-top: 4px solid var(--ink); border-bottom: 4px solid var(--ink);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 16px) 50%, 100% 100%, 0 100%, 16px 50%); }
+.ribbon.r0 { background: var(--violet); color: #fff; } .ribbon.r1 { background: var(--mint); }
+.ribbon.r2 { background: var(--pink); color: #fff; } .ribbon.r3 { background: var(--gold); }
+.ribbon.r4 { background: var(--ink); color: var(--paper); }
+
+/* stitched card */
+.card { position: relative; background: var(--card); border: 4px solid var(--ink); border-radius: 24px; padding: 28px 30px; box-shadow: 9px 9px 0 var(--ink); }
+.card::after { content: ""; position: absolute; inset: 9px; border: 2.5px dashed var(--pink); border-radius: 15px; pointer-events: none; }
+.card.flat { box-shadow: none; }
+.card.st-mint::after { border-color: var(--mint); } .card.st-violet::after { border-color: var(--violet); } .card.st-gold::after { border-color: var(--gold); }
+.card .k { font: 700 16px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--ink2); margin-bottom: 12px; }
+.card .v { font: 600 30px/1.22 var(--head); }
+.card .b { font: 24px/1.4 var(--body); }
+
+.band { position: relative; padding: 26px 36px; background: var(--card); border: 4px solid var(--ink); border-radius: 24px; font: 700 40px/1.15 var(--head); letter-spacing: -.01em; }
+.band::after { content: ""; position: absolute; inset: 8px; border: 2.5px dashed var(--mint); border-radius: 15px; pointer-events: none; }
+
+.todo { display: inline-block; padding: 2px 12px; border: 3px dashed var(--violet); border-radius: 10px; background: rgba(138,99,210,.08); }
+
+/* sunburst photo frame */
+.frame { border: 6px solid var(--ink); border-radius: 32px; overflow: hidden;
+  background: repeating-conic-gradient(from 0deg at 50% 62%, var(--ray1, #F9D27A) 0 10deg, var(--ray2, #F6C35A) 10deg 20deg); }
+.frame.pink { --ray1: #F7B3CF; --ray2: #FBD3E3; } .frame.mintr { --ray1: #A8E3CF; --ray2: #CDEFE2; } .frame.violetr { --ray1: #CDBBEF; --ray2: #E2D7F6; }
+.frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.frame .lbl { position: absolute; left: 22px; right: 22px; bottom: 22px; padding: 12px 16px; background: var(--card); border: 3px solid var(--ink); border-radius: 14px;
+  font: 500 17px/1.4 var(--mono); color: var(--ink); text-align: center; }
+.frame .lbl b { display: block; font: 700 13px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--pink); margin-bottom: 6px; }
+
+.frame.sm { border-width: 5px; border-radius: 20px; box-shadow: 7px 7px 0 var(--ink); }
+.cap { position: absolute; left: 10px; bottom: 10px; padding: 4px 8px; background: var(--card); border: 2.5px solid var(--ink); border-radius: 9px;
+  font: 500 12px/1.3 var(--mono); color: var(--ink); }
+
+/* pins: round photo badges with a stitched ring */
+.pin { position: absolute; border-radius: 50%; overflow: hidden; border: 5px solid var(--ink); box-shadow: 6px 6px 0 var(--ink); background: var(--card); }
+.pin img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pin::after { content: ""; position: absolute; inset: 7px; border: 2.5px dashed var(--pink); border-radius: 50%; pointer-events: none; }
+.pin.mint::after { border-color: var(--mint); } .pin.gold::after { border-color: var(--gold); } .pin.violet::after { border-color: var(--violet); }
+.pincap { position: absolute; font: 500 12px/1.3 var(--mono); color: var(--ink2); text-align: center; }
+
+/* embroidered patches: act tracker */
+.acts { position: absolute; right: 64px; bottom: 40px; display: flex; gap: 10px; }
+.acts i { position: relative; font: 500 13px/1 var(--mono); font-style: normal; letter-spacing: .06em; text-transform: uppercase;
+  padding: 10px 15px; border-radius: 999px; background: var(--card); color: var(--ink); border: 3px solid var(--ink); opacity: .5; }
+.acts i::after { content: ""; position: absolute; inset: 3px; border: 1.5px dashed currentColor; border-radius: 999px; opacity: .45; }
+.acts i.now { opacity: 1; font-weight: 700; }
+.acts i.now.a0 { background: var(--violet); color: #fff; } .acts i.now.a1 { background: var(--mint); }
+.acts i.now.a2 { background: var(--pink); color: #fff; } .acts i.now.a3 { background: var(--gold); }
+.acts i.now.a4 { background: var(--ink); color: var(--paper); }
+
+/* tables */
+.tbl { border-collapse: separate; border-spacing: 0; width: 100%; font: 22px/1.32 var(--body); }
+.tbl th { text-align: left; font: 700 15px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--ink2); padding: 0 16px 14px; border-bottom: 5px solid var(--ink); }
+.tbl td { padding: 15px 16px; vertical-align: top; border-bottom: 2px solid rgba(31,51,40,.13); }
+.tbl tr:last-child td { border-bottom: 0; }
+.tbl td:first-child { font: 800 28px/1.1 var(--head); white-space: nowrap; }
+.tbl td:last-child { font-weight: 700; }
+.tbl.tight td { padding: 10px 16px; font-size: 20px; }
+.tbl.tight td:first-child { font-size: 25px; }
+.tbl tr.special td { background: rgba(245,184,61,.2); }
+.tag { display: inline-block; margin-left: 10px; vertical-align: middle; font: 700 12px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink); background: var(--gold); padding: 5px 8px; border-radius: 6px; }
+
+/* character sheet */
+.sheet .cls { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 4px double var(--ink); padding-bottom: 12px; margin-bottom: 6px; }
+.sheet .cls b { font: 800 40px/1 var(--head); }
+.sheet .cls span { font: 500 15px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink2); }
+.sheet .row { display: grid; grid-template-columns: 170px 1fr; gap: 18px; padding: 13px 0; border-bottom: 2px solid rgba(31,51,40,.12); }
+.sheet .row:last-child { border-bottom: 0; }
+.sheet .row .k { font: 700 15px/1.6 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--pink); margin: 0; }
+.sheet .row .v { font: 24px/1.3 var(--body); }
+
+/* bug report */
+.bug { background: var(--card); border: 4px solid var(--ink); border-radius: 18px; overflow: hidden; font: 26px/1.4 var(--body); box-shadow: 9px 9px 0 var(--ink); }
+.bug .top { background: var(--ink); color: var(--paper); padding: 14px 26px; font: 500 18px/1 var(--mono); display: flex; justify-content: space-between; align-items: center; }
+.bug .r { display: grid; grid-template-columns: 250px 1fr; padding: 15px 26px; border-bottom: 2px solid rgba(31,51,40,.12); }
+.bug .r:last-child { border-bottom: 0; }
+.bug .r .k { font: 700 15px/1.8 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--ink2); }
+.pill { display: inline-block; font: 700 15px/1 var(--mono); padding: 7px 11px; border-radius: 8px; background: var(--pink); color: #fff; }
+
+/* hangers */
+.hangers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; }
+.hanger svg { display: block; width: 130px; height: 58px; margin-bottom: 8px; }
+.hanger .t { font: 800 58px/1 var(--head); padding-top: 14px; border-top: 8px solid currentColor; }
+.hanger .d { margin-top: 16px; font: 25px/1.38 var(--body); color: var(--ink); }
+
+/* day timeline */
+.day { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 26px; }
+.slot { border-left: 9px solid currentColor; padding: 6px 0 6px 22px; }
+.slot .t { font: 500 18px/1 var(--mono); color: var(--ink2); }
+.slot .w { margin-top: 10px; font: 600 30px/1.15 var(--head); color: var(--ink); }
+.slot .c { margin-top: 14px; display: inline-block; font: 700 16px/1 var(--body); letter-spacing: .1em; text-transform: uppercase; padding: 9px 13px; border-radius: 999px; border: 3px solid var(--ink); }
+.chips { display: flex; gap: 14px; flex-wrap: wrap; }
+.chips span { font: 700 24px/1 var(--head); padding: 15px 22px; border-radius: 999px; border: 3px solid var(--ink); background: var(--card); }
+.chips.sm { flex-wrap: nowrap; gap: 12px; } .chips.sm span { font-size: 20px; padding: 13px 17px; white-space: nowrap; }
+
+/* speech bubbles for the "No." slide */
+.said { position: relative; background: var(--card); border: 4px solid var(--ink); border-radius: 26px; padding: 24px 30px; font: 800 52px/1 var(--head); }
+.said::after { content: ""; position: absolute; left: 40px; bottom: -22px; width: 30px; height: 30px; background: var(--card); border-right: 4px solid var(--ink); border-bottom: 4px solid var(--ink); transform: skewY(40deg) rotate(15deg); }
+.said small { display: block; margin-top: 12px; font: 700 15px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--ink2); }
+
+.said.no { background: var(--pink); color: #fff; font-size: 72px; }
+.said.no::after { background: var(--pink); }
+
+/* evidence card */
+.evidence { font: 26px/1.45 var(--body); }
+
+/* positioned pieces stay absolute even when a component sets relative */
+.slide .abs { position: absolute; }
+
+/* ---------- chrome (added at runtime, never saved) ---------- */
+.ui-count { position: fixed; right: 14px; top: 10px; z-index: 20; font: 12px/1 var(--mono); color: rgba(238,241,226,.4); pointer-events: none; }
+.ui-notes { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; display: none; max-height: 38vh; overflow: auto;
+  padding: 16px 28px 24px; background: rgba(238,241,226,.97); color: var(--ink); border-top: 4px solid var(--pink); font: 18px/1.55 var(--body); }
+body.show-notes .ui-notes { display: block; }
+.ui-notes h4 { font: 500 12px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--pink); margin-bottom: 8px; }
+.ui-notes .body p + p { margin-top: 6px; }
+.ui-notes .ref-h { margin-top: 18px !important; padding-top: 12px; border-top: 2px dashed rgba(74,94,82,.35); font: 500 12px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--violet); }
+.ui-notes .ref { position: relative; padding-left: 18px; font-size: 15px; line-height: 1.45; color: var(--ink2); }
+.ui-notes .ref::before { content: "›"; position: absolute; left: 2px; color: var(--violet); font-weight: 700; }
+.ui-notes .body:empty::before { content: "No notes yet."; color: var(--ink2); font-style: italic; }
+
+.ui-bar { position: fixed; left: 50%; top: 10px; transform: translateX(-50%); z-index: 40; display: none; align-items: center; gap: 8px;
+  padding: 6px 8px 6px 16px; border-radius: 999px; background: var(--ink); color: var(--paper); font: 14px/1 var(--body);
+  box-shadow: 0 6px 24px rgba(0,0,0,.35); white-space: nowrap; }
+body.editing .ui-bar { display: flex; }
+.ui-bar b { font-weight: 700; margin-right: 6px; }
+.ui-bar .state { color: var(--restmint); min-width: 96px; }
+.ui-bar .state.dirty { color: var(--gold); }
+.ui-bar button { font: 700 14px/1 var(--body); color: var(--ink); background: var(--paper); border: 0; border-radius: 999px; padding: 9px 14px; cursor: pointer; }
+.ui-bar button.ghost { background: transparent; color: var(--paper); box-shadow: inset 0 0 0 1px rgba(238,241,226,.4); }
+.ui-bar button:hover { filter: brightness(1.08); }
+.ui-hint { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 20; font: 13px/1.4 var(--mono);
+  color: rgba(238,241,226,.85); background: rgba(0,0,0,.45); padding: 8px 14px; border-radius: 999px; transition: opacity 1s; white-space: nowrap; }
+.ui-hint.fade { opacity: 0; pointer-events: none; }
+body { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.ui-pad { position: fixed; right: 12px; bottom: 12px; z-index: 35; display: none; gap: 6px; padding: 6px; border-radius: 999px;
+  background: rgba(31,51,40,.82); box-shadow: 0 4px 18px rgba(0,0,0,.3); transition: opacity .4s; }
+.ui-pad button { min-width: 48px; height: 44px; padding: 0 14px; border: 0; border-radius: 999px; background: transparent; color: var(--paper);
+  font: 700 16px/1 var(--body); cursor: pointer; }
+.ui-pad button:active, .ui-pad button.on { background: rgba(238,241,226,.2); }
+.ui-pad.dim { opacity: .25; }
+@media (pointer: coarse) { .ui-pad { display: flex; } }
+body.show-notes .ui-pad { bottom: calc(var(--notes-h, 0px) + 12px); }
+
+@page { size: 1600px 900px; margin: 0; }
+@media print {
+  html, body { width: 1600px; height: auto; overflow: visible; background: none; }
+  .stage { position: static; left: 0 !important; top: 0 !important; transform: none !important; width: 1600px; height: auto; }
+  .slide { position: relative; opacity: 1; width: 1600px; height: 900px; break-after: page; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .f { opacity: 1; transition: none; }
+  [data-ui] { display: none !important; }
+}
+
+body.editing .f { opacity: 1; }
+body.editing [data-e] { outline: 2px dashed rgba(138,99,210,.5); outline-offset: 6px; border-radius: 4px; cursor: text; }
+body.editing [data-e]:hover { outline-color: var(--violet); }
+body.editing [data-e]:focus { outline: 3px solid var(--violet); background: rgba(255,255,255,.35); }
+body.editing .ui-notes .body { outline: 2px dashed rgba(138,99,210,.5); outline-offset: 6px; border-radius: 4px; min-height: 3em; cursor: text; }
+body.editing .ui-notes .body:focus { outline: 3px solid var(--violet); }
+</style>
+</head>
+<body style="--notes-h: 295px;">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <g id="d20" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round">
+    <polygon points="50,4 90,27 90,73 50,96 10,73 10,27"></polygon>
+    <polygon points="50,24 74,64 26,64"></polygon>
+    <path d="M50 4 L50 24 M90 27 L74 64 M90 73 L74 64 M50 96 L74 64 M50 96 L26 64 M10 73 L26 64 M10 27 L26 64 M90 27 L50 24 M10 27 L50 24"></path>
+  </g>
+  <g id="hanger" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M65 22 C65 14 74 14 74 7 C74 1 66 -1 61 3"></path>
+    <path d="M65 22 L8 52 L122 52 Z"></path>
+  </g>
+</defs></svg>
+<div class="stage">
+
+<!-- ================= ACT 0 · The coat ================= -->
+
+<section class="slide stripes" data-title="Title">
+  <div class="frame abs" style="right:100px;top:80px;width:560px;height:730px;box-shadow:12px 12px 0 var(--ink)"><img src="img/coat-stage.jpg" alt="Luke on stage in the pinned denim coat" style="object-position:50% 30%"></div>
+  <div class="abs" style="left:110px;top:230px"><span class="ribbon r0" data-e="">SE Quality Meetup · 2026</span></div>
+  <div class="h abs" data-e="" style="left:106px;top:300px;width:820px;font-size:128px">QA as Cosplay</div>
+  <div class="sub abs" data-e="" style="left:110px;top:450px;width:760px;font-size:46px">Practising skills before you need them</div>
+  <div class="src abs" data-e="" style="left:110px;bottom:56px">Luke LR</div>
+  <div class="acts"><i class="now a0">0 Coat</i><i>1 Build</i><i>2 Play</i><i>3 Player</i><i>4 Wardrobe</i></div>
+  <aside class="notes"><p>Coat on. Let people see it first.</p><p>"As a QA it can be a bit like living twelve jobs in a trench coat."&nbsp;</p><p>"Not twelve jobs done badly. Twelve views, held at once."</p><p>Why costumes: I chose where I live partly to be near a convention centre. I don't dress up as often as I'd like, but making costumes, even small pieces, is part of how I create.</p><p>The idea for tonight: QAs observe, we can do more than observe software. We can observe those around us, to learn the skills to make us better at what we do.</p></aside>
+</section>
+
+<section class="slide" data-title="Costume, not mask">
+  <div class="abs" style="left:110px;top:90px"><span class="ribbon r0" data-e="">What I mean by costume</span></div>
+  <div class="h abs" data-e="" style="left:106px;top:160px;font-size:100px">Costume, not mask.</div>
+  <div class="abs f" data-step="1" style="left:110px;top:320px;width:670px;display:flex;gap:30px;align-items:flex-start">
+    <div class="frame sm" style="flex:none;width:290px;height:260px"><img src="img/mask.jpg" alt="A steampunk half mask"></div>
+    <div><div class="colhead" data-e="" style="color:var(--ink2)">Mask</div>
+    <div class="item" data-e="">Hides you</div>
+    <div class="item" data-e="">So other people are comfortable</div></div>
+  </div>
+  <div class="abs f" data-step="2" style="left:830px;top:320px;width:670px;display:flex;gap:30px;align-items:flex-start">
+    <div class="frame sm pink" style="flex:none;width:290px;height:260px"><img src="img/costume-llr.jpg" alt="Luke in costume with a pipe wrench" style="object-position:70% 40%"></div>
+    <div><div class="colhead" data-e="" style="color:var(--pink)">Costume</div>
+    <div class="item" data-e="">You, plus a lens you chose</div>
+    <div class="item" data-e="">Put on on purpose</div></div>
+  </div>
+  <div class="band abs f" data-step="3" data-e="" style="left:110px;right:110px;top:660px;text-align:center">Put on the costume, borrow the view.</div>
+  <div class="acts"><i class="now a0">0 Coat</i><i>1 Build</i><i>2 Play</i><i>3 Player</i><i>4 Wardrobe</i></div>
+  <aside class="notes"><p>A mask hides you so other people feel comfortable. A costume is still you, with a lens you chose on purpose.</p><p>The coat is my approachable mode. Each pin is something you can talk to me about. Very few are tech: they're geeky, and they're about who belongs.</p><p>Bridge from Jakub: he showed the skills. This talk is about who's using them.</p><p>The thread for the night: put on the costume, borrow the view.</p></aside>
+</section>
+
+<!-- ================= ACT 1 · Build it ================= -->
+
+<section class="slide stripes" data-title="You already do this">
+  <div class="abs" style="left:110px;top:80px"><span class="ribbon r1" data-e="">Act 1 · Build it</span></div>
+  <div class="h abs" data-e="" style="left:106px;top:150px;font-size:100px">You already do this.</div>
+  <div class="frame abs" style="right:90px;top:80px;width:320px;height:580px;box-shadow:9px 9px 0 var(--ink)"><img src="img/crow.jpg" alt="Luke in a handmade crow skull costume" style="object-position:60% 30%"></div>
+  <div class="abs" style="left:110px;top:310px;width:1020px;display:grid;grid-template-columns:1fr 1fr;gap:30px">
+    <div class="card flat st-mint f" data-step="1"><div class="k" data-e="">Character</div><div class="v" data-e="">The rage-clicker</div></div>
+    <div class="card flat st-violet f" data-step="1"><div class="k" data-e="">Character</div><div class="v" data-e="">The person with 47 tabs open</div></div>
+    <div class="card flat st-gold f" data-step="1"><div class="k" data-e="">Character</div><div class="v" data-e="">The customer who pastes their whole address into "First name"</div></div>
+    <div class="card flat f" data-step="1"><div class="k" data-e="">Character</div><div class="v" data-e="">The 73-year-old on a tablet</div></div>
+  </div>
+  <div class="say abs f" data-step="2" data-e="" style="left:110px;top:700px;width:1300px">"You've spent years pretending to be a confused user. You can pretend to be a Lead for ten minutes."</div>
+  <div class="acts"><i>0 Coat</i><i class="now a1">1 Build</i><i>2 Play</i><i>3 Player</i><i>4 Wardrobe</i></div>
+  <aside class="notes"><p>Ask the room: who's tested as a user who definitely shouldn't have admin access?</p><p>Testers build characters all the time. We just point them at users.</p><p>The crow is me, in a costume I made. Building characters is how I have fun. At work it's the same skill, pointed at users.</p><p>The skill is already there. Tonight is about pointing it somewhere new: at the people we work with, and at the roles we might grow into.</p></aside>
+</section>
+
+<section class="slide" data-title="The costumes that feel like ours">
+  <div class="abs" style="left:110px;top:70px"><span class="ribbon r1" data-e="">Act 1 · The wardrobe</span></div>
+  <div class="h abs" data-e="" style="left:106px;top:140px;font-size:80px">The costumes that feel like ours</div>
+  <div class="frame sm mintr abs" style="right:90px;top:290px;width:290px;height:290px"><img src="img/venn.jpg" alt="Venn diagram patch of three overlapping cats"></div>
+  <div class="card flat st-mint abs" style="left:110px;top:280px;width:1080px">
+    <table class="tbl">
+      <thead><tr><th>Costume</th><th>What's expected</th><th>The QA angle</th></tr></thead>
+      <tbody>
+        <tr class="f" data-step="1"><td data-e="">Tester</td><td data-e="">Bug hunting, evidence, reproduction, risk, prioritisation</td><td data-e="">The foundation. The first costume, not the whole wardrobe.</td></tr>
+        <tr class="f" data-step="2"><td data-e="">QE / SDET</td><td data-e="">Automation, frameworks, environments, performance, observability</td><td data-e="">Infrastructure that makes quality sustainable, not heroic.</td></tr>
+        <tr class="f" data-step="3"><td data-e="">Coach</td><td data-e="">Selling testing, buy-in, bad news, coaching devs, strategy</td><td data-e="">Making the case for quality <i>and</i> for the people doing it.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="acts"><i>0 Coat</i><i class="now a1">1 Build</i><i>2 Play</i><i>3 Player</i><i>4 Wardrobe</i></div>
+  <aside class="notes"><p>Some costumes feel like ours: tester, quality engineer, coach.</p><p>Most of us lean into one. Some love technical depth, some are people-focused. Neither is the "right" QA.</p><p>Remember which one feels most like home. We come back to it at the end.</p><p>The patch: three colours overlapping, and the mix in the middle is where most of us actually work.</p><p class="ref-h">Sources</p><p class="ref">Tim Brown (IDEO) on T-shaped people: depth in one area, plus real interest in the disciplines around you.</p></aside>
+</section>
+
+<section class="slide" data-title="The ones we borrow">
+  <div class="abs" style="left:110px;top:56px"><span class="ribbon r1" data-e="">Act 1 · The wardrobe</span></div>
+  <div class="h abs" data-e="" style="left:106px;top:122px;font-size:76px">The ones we borrow</div>
+  <div class="frame sm abs" style="right:110px;top:56px;width:280px;height:140px;transform:rotate(-5deg)"><img src="img/cryptid.jpg" alt="Local Cryptid patch"></div>
+  <div class="card flat st-violet abs" style="left:110px;top:232px;width:1380px;padding:22px 26px">
+    <table class="tbl tight">
+      <thead><tr><th>Costume</th><th>What's expected</th><th>The QA angle</th></tr></thead>
+      <tbody>
+        <tr><td data-e="">Business Analyst</td><td data-e="">Requirements, acceptance criteria, translation</td><td data-e="">Finding what's <i>not</i> written. "Obviously we meant…"</td></tr>
+        <tr><td data-e="">Developer</td><td data-e="">Reading code, constraints, maintainability</td><td data-e="">The gap between what code does and what it was meant to do.</td></tr>
+        <tr><td data-e="">DevOps</td><td data-e="">Environments, CI/CD, observability, deploys</td><td data-e="">"What happens at 3am when this breaks?"</td></tr>
+        <tr><td data-e="">Project Manager</td><td data-e="">Progress, status, scope, dependencies</td><td data-e="">Knowing when "one more thing" tips the balance. The art of the sell.</td></tr>
+        <tr><td data-e="">Trainer</td><td data-e="">Sharing knowledge, quality culture</td><td data-e="">Quality isn't a phase. It's everyone's work.</td></tr>
+        <tr><td data-e="">UX Researcher</td><td data-e="">Behaviour, misuse, accessibility</td><td data-e="">"A user <i>will</i> do the ridiculous thing."</td></tr>
+        <tr class="special f" data-step="1"><td data-e="">Leader</td><td data-e="">Head of and up: stakeholders, strategy, people</td><td data-e="">Making room for the experts around you. Sometimes this costume becomes the job.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="acts"><i>0 Coat</i><i class="now a1">1 Build</i><i>2 Play</i><i>3 Player</i><i>4 Wardrobe</i></div>
+  <aside class="notes"><p>Other costumes belong to other disciplines. We don't own them, but we borrow them often enough to need our own versions.</p><p>The Leader is a special one. More QA people are moving into Head of Engineering, CTO and other stakeholder roles. Those are blended roles, not pure QA. The costumes we borrow early can turn into our next step.</p></aside>
+</section>
+
+<section class="slide stripes" data-title="One day, three costumes">
+  <div class="abs" style="left:110px;top:70px"><span class="ribbon r1" data-e="">Act 1 · The convention floor</span></div>
+  <div class="h abs" data-e="" style="left:106px;top:140px;font-size:84px">One day, three costumes</div>
+  <div class="day abs" style="left:110px;top:270px;width:1380px">
+    <div class="slot f" data-step="1" style="color:var(--violet)"><div class="t" data-e="">Morning</div><div class="w" data-e="">Strategy and planning meetings</div><div class="c" data-e="" style="background:var(--violet);color:#fff">QA Lead</div></div>
+    <div class="slot f" data-step="2" style="color:var(--mint)"><div class="t" data-e="">Afternoon</div><div class="w" data-e="">Heads down, automating</div><div class="c" data-e="" style="background:var(--mint);color:var(--ink)">SDET</div></div>
+    <div class="slot f" data-step="3" style="color:var(--pink)"><div class="t" data-e="">All day, in between</div><div class="w" data-e="">Store associates: the people actually using the app</div><div class="c" data-e="" style="background:var(--pink);color:#fff">Customer service</div></div>
+  </div>
+  <div class="abs f" data-step="4" style="left:110px;top:520px;width:1380px">
+    <div class="colhead" data-e="" style="color:var(--ink2);margin-bottom:20px">And inside a single ticket</div>
+    <div class="chips sm"><span data-e="">The customer (several of them)</span><span data-e="">The PM: what they want vs what's written</span><span data-e="">The dev: automation hooks?</span><span data-e="">The tester</span></div>
+  </div>
+  <div class="band abs f" data-step="5" data-e="" style="left:110px;width:900px;top:668px;font-size:30px">Shift left and right, in practice: I could see where a change would land, and who needed to know.</div>
+  <div class="acts"><i>0 Coat</i><i class="now a1">1 Build</i><i>2 Play</i><i>3 Player</i><i>4 Wardrobe</i></div>
+  <aside class="notes"><p>Mid-career, a normal day: strategy as QA Lead in the morning, automating in the afternoon, and helping store associates in between. They were the customers for the app I worked hands-on with.</p><p>Every ticket on a customer-facing site means thinking like the customer, the PM, the dev and the tester at once. The 3 amigos is where this matters most: everyone else focuses on their own job, and we facilitate and fill the gaps.</p><p>What moving between those rooms gave me: an understanding of the estate that many people don't get. I knew what users needed at inception and planning. I could see where an incoming change would hit other dev teams. And I knew how it would land on the store associates, and how to help them.</p><p>That's shifting left and right in practice. Knowing where information needs to go, and how to share it.</p><p>Not spread thin: breadth is a depth of its own (if you tilt your head funny).</p><p class="ref-h">Sources</p><p class="ref">Tushman 1977: "boundary spanners", people who translate between groups, are key to innovation.</p><p class="ref">Rubinstein, Meyer &amp; Evans 2001: switching tasks has a real cost. That's why the switch in Act 2 matters.</p></aside>
+</section>
+
+<section class="slide" data-title="Watch someone wear it well">
+  <div class="abs" style="left:110px;top:70px"><span class="ribbon r1" data-e="">Act 1 · Study the source material</span></div>
+  <div class="h abs" data-e="" style="left:106px;top:140px;font-size:84px">Watch someone wear it well.</div>
+  <div class="h abs f" data-step="2" data-e="" style="left:106px;top:232px;font-size:84px;color:var(--pink)">Then wear it for someone else.</div>
+  <div class="abs f" data-step="1" style="left:110px;top:390px;width:540px">
+    <div class="colhead" data-e="" style="color:var(--violet)">Then · the consultant</div>
+    <div class="item" data-e="">Spotted when I had a thought</div>
+    <div class="item" data-e="">Gave me room to say it</div>
+    <div class="item" data-e="">Translated it up</div>
+  </div>
+  <div class="abs f" data-step="2" style="left:720px;top:390px;width:470px">
+    <div class="colhead" data-e="" style="color:var(--pink)">Now · the buddy system</div>
+    <div class="item" data-e="">See us at an event? Say hi.</div>
+    <div class="item" data-e="">Crowd too much? Come find one of us.</div>
+  </div>
+  <div class="frame sm abs f" data-step="1" style="right:90px;top:370px;width:290px;height:195px;transform:rotate(-2deg)"><img src="img/coat-source.jpg" alt="Emilien Vekemans in a long black coat"><div class="cap">Emilien Vekemans · Netflix</div></div>
+  <div class="frame sm mintr abs f" data-step="2" style="right:90px;top:590px;width:290px;height:195px;transform:rotate(1.5deg)"><img src="img/pocket.jpg" alt="Pins on the coat pocket"><div class="cap" style="left:auto;right:10px">Left pin: Abi Stevens</div></div>
+  <div class="acts"><i>0 Coat</i><i class="now a1">1 Build</i><i>2 Play</i><i>3 Player</i><i>4 Wardrobe</i></div>
+  <aside class="notes"><p>Then: senior meetings with a consultant buddy. External, loud, less at stake for them. They spotted when I had a thought, gave me room, and translated it up. I was studying the costume while wearing a bit of it.</p><p>The coat has source material too. One of its inspirations is Emilien Vekemans' character in The Bastard Son &amp; the Devil Himself. I used to have the same hair colour. I took a little of that character's confidence into the coat, then took it further to make it mine. It helped me learn to be more me, and to lead a group.</p><p>Now: Phillipa and I both say it. If you see us at an event, say hi. If the crowd is intimidating, come to one of us and we'll help.</p><p>Watching counts as work. Observation is engagement (see Quality Voyeur).</p><p class="ref-h">Sources</p><p class="ref">Ibarra 1999: people moving into senior roles watched role models, then tried out "provisional selves".</p></aside>
+</section>
+
+<section class="slide stripes" data-title="Put on the PM">
+  <div class="abs" style="left:110px;top:70px"><span class="ribbon r1" data-e="">Act 1 · The character sheet</span></div>
+  <div class="h abs" data-e="" style="left:106px;top:140px;width:640px;font-size:96px">Put on the PM.</div>
+  <div class="card flat st-violet abs" style="left:110px;top:290px;width:640px;padding:24px 28px">
+    <div class="k" data-e="">The tester says</div>
+    <div class="b" data-e="">P1 in checkout. Steps, evidence, severity. It's not ready.</div>
+  </div>
+  <div class="card abs f" data-step="2" style="left:110px;top:500px;width:640px;padding:24px 28px">
+    <div class="k" data-e="">The PM hears</div>
+    <div class="b" data-e="">Fix first: about a week's delay. Ship as it is: Thousands(£) at risk. Not every customer hits it, but the baskets that do are big ones.</div>
+  </div>
+  <div class="card sheet abs f" data-step="1" style="right:110px;top:90px;width:680px">
+    <div class="cls"><b data-e="">Product Manager</b><span data-e="">Class</span></div>
+    <div class="row"><div class="k">Goals</div><div class="v" data-e="">Ship the roadmap item. Keep the promise made upstairs.</div></div>
+    <div class="row"><div class="k">Fears</div><div class="v" data-e="">Slipping a date in front of leadership. Surprises.</div></div>
+    <div class="row"><div class="k">Perception</div><div class="v" data-e="">Dates, scope, customer impact. In that order.</div></div>
+    <div class="row"><div class="k">Currency</div><div class="v" data-e="">Customer and revenue risk.</div></div>
+  </div>
+  <div class="pin gold f" data-step="1" style="right:56px;top:420px;width:200px;height:200px;transform:rotate(10deg)"><img src="img/lion-d20.jpg" alt="Lion and d20 patch"></div>
+  <div class="say abs f" data-step="3" data-e="" style="left:110px;top:745px;width:640px">That's borrowing the PM's view.</div>
+  <div class="src abs" data-e="" style="left:810px;top:610px;width:500px">Galinsky et al. 2008, <i>Psychological Science</i></div>
+  <div class="acts"><i>0 Coat</i><i class="now a1">1 Build</i><i>2 Play</i><i>3 Player</i><i>4 Wardrobe</i></div>
+  <aside class="notes"><p>We write personas for users all the time. Point one at a colleague.</p><p>The tester's report is correct, but it's written for testers. It answers "is it broken?", not "what should I do?".</p><p>We're trying not to be the gatekeepers anymore. The decision belongs to the people who own it, so the information has to be useful to them.</p><p>The PM hears it in their currency: the fix costs about a week; shipping risks thousands. Not every customer hits the bug, and not all of them would abandon, but checkout baskets were worth a lot.</p><p>That's borrowing the PM's view. Research backs it: <i>thinking</i> from the other side, not just feeling for them, uncovers options nobody had seen.</p><p>Say it out loud: character sheets for common roles, plus a blank one, are in the download. Print them, cut them out, fill them in for the real people you work with.</p><p class="ref-h">Sources</p><p class="ref">Galinsky, Maddux, Gilin &amp; White 2008, "Why it pays to get inside the head of your opponent", Psychological Science.</p></aside>
+</section>
+
+<!-- ================= ACT 2 · Play it ================= -->
+
+<section class="slide" data-title="Find your switch">
+  <div class="frame pink abs" style="right:100px;top:100px;width:520px;height:640px;box-shadow:12px 12px 0 var(--ink)"><img src="img/bowie.jpg" alt="Bowie lightning-bolt skull patch"></div>
+  <div class="abs" style="left:110px;top:120px"><span class="ribbon r2" data-e="">Act 2 · Play it</span></div>
+  <div class="h abs" data-e="" style="left:106px;top:195px;width:900px;font-size:100px">Find your switch.</div>
+  <div class="abs f" data-step="1" style="left:110px;top:330px;width:740px">
+    <div class="item" data-e="">A name</div>
+    <div class="item" data-e="">An object</div>
+    <div class="item" data-e="">A moment</div>
+  </div>
+  <div class="band abs f" data-step="2" data-e="" style="left:110px;top:600px;width:800px;font-size:36px">Who turns up when prod goes down? Steal a bit of who they are.</div>
+  <div class="acts"><i>0 Coat</i><i>1 Build</i><i class="now a2">2 Play</i><i>3 Player</i><i>4 Wardrobe</i></div>
+  <aside class="notes"><p>The switch is the small ritual that lets you slip into the character you need, so it doesn't take as much willpower.</p><p>It can be a name, an object or a moment. For me, it's putting the coat on.</p><p>Bowie is the patron saint of the switch. Ziggy Stardust was a name he could step into and back out of.</p><p>Named modes are a cheap switch on low-capacity days. That matters with ADHD.</p><p>Ask the room: who turns up when prod goes down?</p></aside>
+</section>
+
+<section class="slide mint" data-title="What would the Lead do?">
+  <div class="abs" style="left:110px;top:90px"><span class="ribbon" data-e="">Act 2 · Play it</span></div>
+  <div class="h abs" data-e="" style="left:106px;top:170px;font-size:96px;color:var(--ink2);text-decoration:line-through;text-decoration-color:var(--pink);text-decoration-thickness:10px">What would Batman do?</div>
+  <div class="h abs f" data-step="1" data-e="" style="left:106px;top:300px;font-size:120px">What would the Lead do?</div>
+  <div class="card evidence abs f" data-step="2" style="left:110px;top:500px;width:1380px">
+    <div class="k" data-e="">The Batman Effect · White et al. 2017, <i>Child Development</i></div>
+    <div data-e="">Children aged 4 and 6 were given a dull task, with a tempting game nearby. Those asked to be a character like Batman kept going longest. Stepping into a character gave them distance from their own impulses.</div>
+  </div>
+  <div class="acts"><i>0 Coat</i><i>1 Build</i><i class="now a2">2 Play</i><i>3 Player</i><i>4 Wardrobe</i></div>
+  <aside class="notes"><p>Kids pretending to be Batman stuck at a boring task longer than kids who stayed themselves.</p><p>So when you're stuck, ask what the Lead would do. Or the PM, or the coach.</p><p>Honesty: it's one study, with children. This is a hook, not proof. But it fits the wider self-distancing research: stepping outside yourself makes you steadier.</p><p class="ref-h">Sources</p><p class="ref">White, Prager, Schaefer, Kross, Duckworth &amp; Carlson 2017, "The 'Batman Effect': Improving perseverance in young children", Child Development.</p></aside>
+</section>
+
+<section class="slide" data-title="The costume takes the hit">
+  <div class="abs" style="left:110px;top:70px"><span class="ribbon r2" data-e="">Act 2 · Play it</span></div>
+  <div class="h abs" data-e="" style="left:106px;top:140px;width:1380px;font-size:84px">"It's the costume being bold, not me."</div>
+  <div class="abs" style="left:110px;top:290px;display:flex;gap:34px;align-items:flex-end">
+    <div class="said f" data-step="1" data-e="">No, but…<small>Opens a door</small></div>
+    <div class="said f" data-step="1" data-e="">Yes, and…<small>Opens a door</small></div>
+    <div class="said no f" data-step="2" data-e="">No.<small style="color:#fff">The stonewall</small></div>
+  </div>
+  <div class="pin f" data-step="2" style="left:1150px;top:270px;width:190px;height:190px;transform:rotate(-6deg)"><img src="img/owl.jpg" alt="Owl pin saying ugh"></div>
+  <div class="band abs f" data-step="3" data-e="" style="left:110px;width:1080px;top:540px">Stop dressing up for people who don't want to be at the show.</div>
+  <div class="say abs f" data-step="4" data-e="" style="left:110px;top:728px;width:1080px">Find who'll listen. Help them carry it. Let them take the credit.</div>
+  <div class="pin mint f" data-step="4" style="right:100px;top:530px;width:230px;height:230px;transform:rotate(5deg)"><img src="img/rat.jpg" alt="I Will Survive plague rat pin"></div>
+  <div class="acts"><i>0 Coat</i><i>1 Build</i><i class="now a2">2 Play</i><i>3 Player</i><i>4 Wardrobe</i></div>
+  <aside class="notes"><p>A costume gives you permission and distance. You can try things in a role you'd never try as yourself, and when it goes wrong, the costume takes the hit.</p><p>Some people's first answer is "No, but…" or "Yes, and…". Both open a door. We've all met someone whose answer is just "No."</p><p>Most of how I work relies on people wanting to work with me, so a stonewall is hard. Pushing through it with more evidence, more seniority, more volume isn't my costume.</p><p>Someone asked about this recently: very technical, and still kept out of dev meetings. My answer: stop dressing up for people who don't want to be at the show. Redirect the energy to where you can make a difference.</p><p>Find someone in their team who will listen. Put on the coach for them. Help them grow and carry the idea further than you could.</p><p>It's worked more than once.&nbsp;</p><p>The cost: you often won't get the credit. That's fine. The goal was a better product and helping them get recognised. At some point we choose between our ego and our principles.</p><p class="ref-h">Sources</p><p class="ref">Chase, Chin, Oppezzo &amp; Schwartz 2009, the "protégé effect": when a character takes the test, failure stings less (an ego-protective buffer).</p></aside>
+</section>
+
+<!-- ================= ACT 3 · The player ================= -->
+
+<section class="slide stripes" data-title="Does it fit?">
+  <div class="abs" style="left:110px;top:70px"><span class="ribbon r3" data-e="">Act 3 · The player</span></div>
+  <div class="h abs" data-e="" style="left:106px;top:140px;font-size:96px">Does it fit?</div>
+  <div class="pin violet f" data-step="1" style="right:130px;top:40px;width:200px;height:200px;transform:rotate(7deg)"><img src="img/moth.jpg" alt="Infinite Neurodiversity moth pin"></div>
+  <div class="pincap f" data-step="1" style="right:110px;top:250px;width:240px">Pin: Abi Stevens</div>
+  <div class="hangers abs" style="left:110px;top:270px;width:1380px">
+    <div class="hanger f" data-step="1" style="color:var(--mint)"><svg viewBox="0 0 130 58"><use href="#hanger"></use></svg><div class="t" data-e="" style="color:var(--ink)">Pin it</div><div class="d" data-e="">It becomes part of you. A pin on the coat you wear into every role.</div></div>
+    <div class="hanger f" data-step="2" style="color:var(--gold)"><svg viewBox="0 0 130 58"><use href="#hanger"></use></svg><div class="t" data-e="" style="color:var(--ink)">Tailor it</div><div class="d" data-e="">Adjust it until it fits how you work.</div></div>
+    <div class="hanger f" data-step="3" style="color:var(--pink)"><svg viewBox="0 0 130 58"><use href="#hanger"></use></svg><div class="t" data-e="" style="color:var(--ink)">Borrow it</div><div class="d" data-e="">Full time Automation looks better on other people. I'm at my best pairing, in the side seat.</div></div>
+  </div>
+  <div class="band abs f" data-step="4" data-e="" style="left:110px;right:110px;top:650px;font-size:32px">This is my approach, not the only one. Some go deep. Some go people. I go broad, and champion the experts around me.</div>
+  <div class="acts"><i>0 Coat</i><i>1 Build</i><i>2 Play</i><i class="now a3">3 Player</i><i>4 Wardrobe</i></div>
+  <aside class="notes"><p>Now look at the yourself, not the costume. What did wearing it teach you?</p><p>Pin it: the costume becomes part of who you are. Back to the wardrobe: some people take the SDET off as they grow but keep the BA pin, even at senior levels. Sometimes a borrowed costume becomes your next job.</p><p>Tailor it: it's useful once you adjust it to how you work.</p><p>Borrow it: you don't throw it away. Costumes that don't fit show you your blind spots, and where you need the experts most. I've done full-time automation. I can do it, but I'm at my best pairing up and taking the side seat.</p><p>This isn't hedging. It's knowing where your limits are, when to push them, and when the effort isn't worth it. So refocus (ego v principles again).</p><p>The whole wardrobe: study the source, write the character sheet, borrow their view, grow it from the ground, and know what to pin and what to borrow. It's also how I'd walk into a team I've never met.</p><p class="ref-h">Sources</p><p class="ref">David Epstein, <i>Range</i>: generalists do well in "wicked" domains where connections matter. Software quality is one.</p></aside>
+</section>
+
+<section class="slide" data-title="Costumes you forgot you put on">
+  <div class="abs" style="left:110px;top:70px"><span class="ribbon r3" data-e="">Act 3 · The player</span></div>
+  <div class="h abs" data-e="" style="left:106px;top:140px;font-size:80px">Costumes you forgot you put on</div>
+  <div class="bug abs" style="left:110px;top:262px;width:860px;font-size:24px">
+    <div class="top"><span data-e="">SELF-404</span><span class="pill" data-e="">Fix in progress</span></div>
+    <div class="r"><div class="k">Title</div><div data-e=""><b>User can't see past the app</b></div></div>
+    <div class="r f" data-step="1"><div class="k">Steps to reproduce</div><div data-e="">Live in one app's day-to-day for years. Get very good at it.</div></div>
+    <div class="r f" data-step="2"><div class="k">Expected</div><div data-e="">This is just how I work</div></div>
+    <div class="r f" data-step="3"><div class="k">Actual</div><div data-e=""><b style="color:var(--pink)">Missing how it fed the wider business</b></div></div>
+    <div class="r f" data-step="4"><div class="k">Fix</div><div data-e="">Step into the strategy rooms too</div></div>
+  </div>
+  <div class="frame sm abs f" data-step="2" style="left:1040px;top:290px;width:210px;height:140px;transform:rotate(-5deg)"><img src="img/habu.jpg" alt="Faded Habu Box patch"></div>
+  <div class="frame sm abs f" data-step="2" style="left:1270px;top:267px;width:200px;height:200px;transform:rotate(4deg)"><img src="img/playstation.jpg" alt="PlayStation patch"></div>
+  <div class="abs" style="left:1030px;top:505px;width:460px;display:grid;gap:16px">
+    <div class="card flat st-mint f" data-step="5" style="padding:18px 22px;display:flex;gap:18px;align-items:center"><div class="pin mint" style="position:relative;flex:none;width:84px;height:84px;border-width:4px;box-shadow:none"><img src="img/octopus.jpg" alt="Octopus patch"></div><div><div class="k" data-e="">Head in the weeds</div><div class="b" data-e="">Every detail. No horizon.</div></div></div>
+    <div class="card flat st-violet f" data-step="5" style="padding:18px 22px;display:flex;gap:18px;align-items:center"><div class="pin violet" style="position:relative;flex:none;width:84px;height:84px;border-width:4px;box-shadow:none"><img src="img/highwind.jpg" alt="Highwind airship pin"></div><div><div class="k" data-e="">Head in the clouds</div><div class="b" data-e="">Every pattern. No detail.</div></div></div>
+  </div>
+  <div class="say abs f" data-step="6" data-e="" style="left:110px;top:700px;width:880px">Time in a role builds blinkers. Borrow a wider view to see again.</div>
+  <div class="src abs" data-e="" style="left:110px;bottom:56px">Quoidbach, Gilbert &amp; Wilson 2013, "The end of history illusion", <i>Science</i></div>
+  <div class="acts"><i>0 Coat</i><i>1 Build</i><i>2 Play</i><i class="now a3">3 Player</i><i>4 Wardrobe</i></div>
+  <aside class="notes"><p>Some costumes are picked up along the way, not chosen. Experience is one of them, and it comes with blinkers.</p><p>Like the patches: PlayStation a much younger me, now I'm a PC guy.</p><p>Feedback I've been given: head in the weeds. I lived in the development of one app and in helping its users. I was good at it, and comfortable, so I didn't see how it fed into the wider aims of the business, or how to help drive them.</p><p>"Expected: this is just how I work" is a real effect. People accept they've changed a lot in the past, then predict they'll barely change from here. The end of history illusion.</p><p>The fix, still in progress: getting the broader picture by stepping into the strategy and planning rooms as well. The morning meetings from earlier.</p><p>I swing between head in the weeds and head in the clouds. Neither is wrong; staying in one is. Stepping out, even briefly, shows you what you'd stopped seeing.</p><p>Borrow a wider view. Sometimes that's someone else's, sometimes it's your own from a different room.</p><p class="ref-h">Sources</p><p class="ref">Quoidbach, Gilbert &amp; Wilson 2013, "The end of history illusion", Science.</p><p class="ref">Grossmann &amp; Kross 2014, "Exploring Solomon's paradox": we reason more wisely about other people's problems than our own, and distance closes the gap.</p></aside>
+</section>
+
+<!-- ================= ACT 4 · The wardrobe ================= -->
+
+
+<section class="slide stripes" data-title="Your wardrobe">
+  <div class="abs" style="left:110px;top:100px"><span class="ribbon r4" data-e="">Your turn</span></div>
+  <div class="abs" style="left:110px;top:180px;width:900px">
+    <div class="h f" data-step="1" data-e="" style="font-size:70px;line-height:1.05">What's already in your wardrobe?</div>
+    <div class="h f" data-step="2" data-e="" style="margin-top:30px;font-size:70px;line-height:1.05;color:#2A8F74">What needs tailoring?</div>
+    <div class="h f" data-step="3" data-e="" style="margin-top:30px;font-size:70px;line-height:1.05;color:#B8336F">What needs a refresh?</div>
+  </div>
+  <div class="frame violetr abs" style="right:100px;top:180px;width:420px;height:440px"><div class="lbl"><b>QR</b>Slides + character sheets</div></div>
+  <div class="pin gold" style="right:50px;top:110px;width:130px;height:130px;transform:rotate(12deg)"><img src="img/stayrad.jpg" alt="Stay Rad patch"></div>
+  <div class="band abs f" data-step="4" data-e="" style="left:110px;width:1000px;top:640px;text-align:center">Put on the costume, borrow the view.</div>
+  <div class="src abs" data-e="" style="left:110px;bottom:56px">Luke LR · Come and ask me about a pin</div>
+  <div class="acts"><i>0 Coat</i><i>1 Build</i><i>2 Play</i><i>3 Player</i><i class="now a4">4 Wardrobe</i></div>
+  <aside class="notes"><p>Three questions to take away.</p><p>What's already in your wardrobe: the costumes you wear without noticing.</p><p>What needs tailoring: the ones that nearly fit.</p><p>What needs a refresh: the ones you put on years ago and never stepped out of.</p><p>Take a character sheet: they're behind the QR code with the slides. Pick one person you work with and fill it in this week.</p><p>Put on the costume, borrow the view.</p><p>Close: come and ask me about a pin.</p></aside>
+</section>
+
+</div>
+<script>
+/* ===== Deck engine + editor. Everything with data-ui is chrome and is stripped on save. ===== */
+(function () {
+  const W = 1600, H = 900;
+  const stage = document.querySelector('.stage');
+  const slides = [...document.querySelectorAll('.slide')];
+  let i = 0, step = 0, editing = false, dirty = false, handle = null;
+  // Editing only works on the local file. Anywhere on the web the deck is view-only.
+  const READONLY = location.protocol !== 'file:';
+  const touch = matchMedia('(pointer: coarse)').matches;
+
+  // ---------- chrome ----------
+  const el = (tag, cls, html) => { const e = document.createElement(tag); e.className = cls; e.dataset.ui = ''; if (html) e.innerHTML = html; document.body.appendChild(e); return e; };
+  const count = el('div', 'ui-count');
+  const notes = el('div', 'ui-notes', '<h4></h4><div class="body"></div>');
+  const notesTitle = notes.querySelector('h4'), notesBody = notes.querySelector('.body');
+  const bar = el('div', 'ui-bar',
+    '<b>Editing</b><span class="state">Saved</span>' +
+    '<button class="ghost" data-act="prev" title="Previous slide (PageUp)">‹</button>' +
+    '<button class="ghost" data-act="next" title="Next slide (PageDown)">›</button>' +
+    '<button data-act="save" title="Ctrl+S">Save</button>' +
+    '<button class="ghost" data-act="md" title="Download all speaker notes as Markdown">Notes .md</button>' +
+    '<button class="ghost" data-act="done" title="E">Done</button>');
+  const state = bar.querySelector('.state');
+  const hint = el('div', 'ui-hint', touch ? 'Tap or swipe to move · Notes button for speaker notes'
+    : READONLY ? '→ next · ← back · N notes · F fullscreen' : '→ next · ← back · N notes · E edit · Ctrl+S save · F fullscreen');
+  setTimeout(() => hint.classList.add('fade'), 4500);
+
+  // touch / mouse button bar (shown on touch screens)
+  const fsEl = document.documentElement;
+  const canFs = !!(fsEl.requestFullscreen || fsEl.webkitRequestFullscreen);
+  const isFs = () => !!(document.fullscreenElement || document.webkitFullscreenElement);
+  function toggleFs() {
+    if (isFs()) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    else if (canFs) (fsEl.requestFullscreen || fsEl.webkitRequestFullscreen).call(fsEl);
+  }
+  function toggleNotes() { document.body.classList.toggle('show-notes'); padNotes.classList.toggle('on', document.body.classList.contains('show-notes')); fit(); }
+  const pad = el('div', 'ui-pad',
+    '<button data-p="prev" aria-label="Previous">‹</button>' +
+    '<button data-p="notes" aria-label="Speaker notes">Notes</button>' +
+    (canFs ? '<button data-p="fs" aria-label="Fullscreen">⛶</button>' : '') +
+    '<button data-p="next" aria-label="Next">›</button>');
+  const padNotes = pad.querySelector('[data-p="notes"]');
+  pad.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    e.stopPropagation();
+    ({ prev: () => prev(), next: () => next(), notes: toggleNotes, fs: toggleFs })[b.dataset.p]();
+  });
+  let dimT; const wake = () => { pad.classList.remove('dim'); clearTimeout(dimT); dimT = setTimeout(() => pad.classList.add('dim'), 3500); };
+  addEventListener('touchstart', wake, { passive: true }); wake();
+
+  // ---------- layout ----------
+  // when the notes panel is open, the slide shrinks to sit above it
+  function fit() {
+    const nh = document.body.classList.contains('show-notes') ? notes.offsetHeight : 0;
+    document.body.style.setProperty('--notes-h', nh + 'px');
+    const avail = innerHeight - nh;
+    stage.style.top = (avail / 2) + 'px';
+    stage.style.transform = 'translate(-50%,-50%) scale(' + Math.min(innerWidth / W, avail / H) + ')';
+  }
+  addEventListener('resize', fit);
+
+  // ---------- builds ----------
+  const steps = s => Math.max(0, ...[...s.querySelectorAll('[data-step]')].map(e => +e.dataset.step));
+  function render() {
+    slides.forEach((s, n) => s.classList.toggle('active', n === i));
+    slides[i].querySelectorAll('[data-step]').forEach(e => e.classList.toggle('on', editing || +e.dataset.step <= step));
+    count.textContent = (i + 1) + ' / ' + slides.length;
+    notesTitle.textContent = (i + 1) + ' · ' + (slides[i].dataset.title || '') + ' · speaker notes';
+    const a = slides[i].querySelector('.notes');
+    notesBody.innerHTML = a ? a.innerHTML : '';
+    try { history.replaceState(null, '', '#' + (i + 1)); } catch (e) {}
+    fit();
+  }
+  function next() { if (!editing && step < steps(slides[i])) step++; else if (i < slides.length - 1) { i++; step = 0; } render(); }
+  function prev() { if (!editing && step > 0) step--; else if (i > 0) { i--; step = editing ? 0 : steps(slides[i]); } render(); }
+  function go(n) { i = Math.max(0, Math.min(slides.length - 1, n)); step = 0; render(); }
+
+  // ---------- editing ----------
+  const markDirty = v => { dirty = v; state.textContent = v ? 'Unsaved changes' : 'Saved'; state.classList.toggle('dirty', v); };
+  function setEditing(on) {
+    if (READONLY && on) return;
+    editing = on;
+    document.body.classList.toggle('editing', on);
+    if (on) document.body.classList.add('show-notes');
+    document.querySelectorAll('[data-e]').forEach(e => { if (on) e.setAttribute('contenteditable', 'true'); else e.removeAttribute('contenteditable'); });
+    if (on) notesBody.setAttribute('contenteditable', 'true'); else notesBody.removeAttribute('contenteditable');
+    if (!on && document.activeElement) document.activeElement.blur();
+    fit();
+    step = 0; render();
+  }
+  stage.addEventListener('input', () => markDirty(true));
+  notesBody.addEventListener('input', () => {
+    fit();
+    let a = slides[i].querySelector('.notes');
+    if (!a) { a = document.createElement('aside'); a.className = 'notes'; slides[i].appendChild(a); }
+    a.innerHTML = notesBody.innerHTML; markDirty(true);
+  });
+  // paste as plain text so styling from elsewhere doesn't sneak in
+  document.addEventListener('paste', e => {
+    if (!editing || !e.target.closest('[contenteditable]')) return;
+    e.preventDefault(); document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text'));
+  });
+
+  // ---------- saving ----------
+  function serialise() {
+    const root = document.documentElement.cloneNode(true);
+    root.querySelectorAll('[data-ui]').forEach(e => e.remove());
+    root.querySelectorAll('[contenteditable]').forEach(e => e.removeAttribute('contenteditable'));
+    root.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+    root.querySelectorAll('[data-step]').forEach(e => e.classList.remove('on'));
+    root.querySelectorAll('[class=""]').forEach(e => e.removeAttribute('class'));
+    const st = root.querySelector('.stage'); st.removeAttribute('style');
+    const b = root.querySelector('body'); b.removeAttribute('class');
+    return '<!doctype html>\n' + root.outerHTML + '\n';
+  }
+  const fileName = (() => { try { return decodeURIComponent(location.pathname.split('/').pop()) || 'deck.html'; } catch (e) { return 'deck.html'; } })();
+  const idb = (mode, fn) => new Promise((res, rej) => {
+    const r = indexedDB.open('deck-editor', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('h');
+    r.onsuccess = () => { const t = r.result.transaction('h', mode); const q = fn(t.objectStore('h')); t.oncomplete = () => res(q && q.result); t.onerror = () => rej(t.error); };
+    r.onerror = () => rej(r.error);
+  });
+  const handleKey = location.pathname;
+  async function getHandle() { try { return await idb('readonly', s => s.get(handleKey)); } catch (e) { return null; } }
+  async function putHandle(h) { try { await idb('readwrite', s => s.put(h, handleKey)); } catch (e) {} }
+  function download(text, name, type) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  }
+  async function save() {
+    const html = serialise();
+    if (!window.showSaveFilePicker) { download(html, fileName, 'text/html'); markDirty(false); state.textContent = 'Downloaded'; return; }
+    try {
+      if (!handle) handle = await getHandle();
+      if (handle && (await handle.queryPermission({ mode: 'readwrite' })) !== 'granted' &&
+          (await handle.requestPermission({ mode: 'readwrite' })) !== 'granted') handle = null;
+      if (!handle) {
+        handle = await window.showSaveFilePicker({ suggestedName: fileName, types: [{ description: 'HTML deck', accept: { 'text/html': ['.html'] } }] });
+        await putHandle(handle);
+      }
+      const w = await handle.createWritable(); await w.write(html); await w.close();
+      markDirty(false); state.textContent = 'Saved to ' + handle.name;
+    } catch (e) {
+      if (e && e.name === 'AbortError') return;
+      download(html, fileName, 'text/html'); markDirty(false); state.textContent = 'Downloaded';
+    }
+  }
+  function notesMarkdown() {
+    const md = ['# QA as Cosplay · speaker notes', ''];
+    slides.forEach((s, n) => {
+      md.push('## ' + (n + 1) + ' · ' + (s.dataset.title || ''), '');
+      const a = s.querySelector('.notes');
+      if (a) [...a.querySelectorAll('p')].forEach(p => md.push(p.classList.contains('ref-h') ? '### ' + toMd(p) : p.classList.contains('ref') ? '- ' + toMd(p) : toMd(p), ''));
+    });
+    return md.join('\n');
+  }
+  function toMd(node) {
+    return [...node.childNodes].map(c => {
+      if (c.nodeType === 3) return c.textContent;
+      const t = toMd(c), tag = c.tagName;
+      return tag === 'B' || tag === 'STRONG' ? '**' + t + '**' : tag === 'EM' || tag === 'I' ? '*' + t + '*' : t;
+    }).join('');
+  }
+  addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+  bar.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    ({ prev, next, save, done: () => setEditing(false), md: () => download(notesMarkdown(), 'speaker-notes.md', 'text/markdown') })[b.dataset.act]();
+  });
+
+  // ---------- keys ----------
+  addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { if (READONLY) return; e.preventDefault(); if (editing) save(); return; }
+    const typing = e.target.closest && e.target.closest('[contenteditable]');
+    if (typing) {
+      if (e.key === 'Escape') e.target.blur();
+      else if (e.key === 'PageDown') { e.preventDefault(); e.target.blur(); next(); }
+      else if (e.key === 'PageUp') { e.preventDefault(); e.target.blur(); prev(); }
+      return;
+    }
+    const k = e.key.toLowerCase();
+    if (['arrowright', 'pagedown', ' '].includes(k)) { e.preventDefault(); next(); }
+    else if (['arrowleft', 'pageup'].includes(k)) { e.preventDefault(); prev(); }
+    else if (k === 'home') go(0);
+    else if (k === 'end') go(slides.length - 1);
+    else if (k === 'n') toggleNotes();
+    else if (k === 'e') setEditing(!editing);
+    else if (k === 'f') toggleFs();
+  });
+  // click / tap: left third goes back, the rest goes forward. Swipe works too.
+  let sx = null, sy = 0, swiped = false;
+  stage.addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; swiped = false; }, { passive: true });
+  stage.addEventListener('touchend', e => {
+    if (sx === null || editing) return;
+    const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy; sx = null;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) { swiped = true; dx < 0 ? next() : prev(); }
+  });
+  stage.addEventListener('click', e => {
+    if (editing || swiped || e.target.closest('a')) { swiped = false; return; }
+    e.clientX < innerWidth / 3 ? prev() : next();
+  });
+
+  const m = location.hash.match(/^#(\d+)/);
+  if (m) i = Math.max(0, Math.min(slides.length - 1, +m[1] - 1));
+  if (/edit/.test(location.search)) setEditing(true);
+  render();
+})();
+</script>
+
+
+
+
+
+
+
+</body></html>

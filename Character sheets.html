@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Character sheets</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&amp;family=Fraunces:opsz,wght@9..144,600..900&amp;family=DM+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+/* Printable character sheets · A4, four A6 cards per page. Print at 100% / actual size. */
+:root { --paper: #EEF1E2; --ink: #1F3328; --ink2: #4A5E52; --card: #FFFDF6;
+  --pink: #E8508F; --gold: #F5B83D; --mint: #3CC4A0; --violet: #8A63D2; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #d9ddd0; font-family: "Atkinson Hyperlegible", sans-serif; color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.intro { max-width: 210mm; margin: 24px auto 10px; padding: 0 4mm; font-size: 15px; line-height: 1.5; color: var(--ink2); }
+.intro b { color: var(--ink); }
+.page { width: 210mm; height: 297mm; margin: 0 auto 24px; padding: 0; background: #fff;
+  display: grid; grid-template-columns: 105mm 105mm; grid-template-rows: 148.5mm 148.5mm; }
+.cell { padding: 5mm; border-right: 0.3mm dashed #c6ccbf; border-bottom: 0.3mm dashed #c6ccbf; }
+.cell:nth-child(2n) { border-right: 0; } .cell:nth-child(n+3) { border-bottom: 0; }
+
+.sheet { position: relative; height: 100%; background: var(--card); border: 1mm solid var(--ink); border-radius: 5mm; padding: 6mm 6mm 5mm; display: flex; flex-direction: column; }
+.sheet::after { content: ""; position: absolute; inset: 1.6mm; border: 0.5mm dashed var(--st, var(--pink)); border-radius: 3.4mm; pointer-events: none; }
+.ribbon { align-self: flex-start; margin-left: -1mm; padding: 1.6mm 5mm; font: 700 7.5pt/1 "Atkinson Hyperlegible"; letter-spacing: .14em; text-transform: uppercase;
+  background: var(--rb, var(--mint)); color: var(--rbink, var(--ink)); border-top: .6mm solid var(--ink); border-bottom: .6mm solid var(--ink);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 2.4mm) 50%, 100% 100%, 0 100%, 2.4mm 50%); }
+.cls { margin: 3mm 0 2mm; padding-bottom: 2mm; border-bottom: .9mm double var(--ink); font: 800 17pt/1.05 Fraunces, serif; }
+.row { padding: 1.7mm 0; border-bottom: .25mm solid rgba(31,51,40,.14); }
+.row:last-child { border-bottom: 0; }
+.k { font: 700 6.6pt/1.2 "Atkinson Hyperlegible"; letter-spacing: .13em; text-transform: uppercase; color: var(--kc, var(--pink)); }
+.k span { font-weight: 400; letter-spacing: .04em; text-transform: none; color: var(--ink2); }
+.v { margin-top: .7mm; font: 9pt/1.32 "Atkinson Hyperlegible"; }
+.say { padding: 2.4mm 3mm; background: rgba(60,196,160,.13); border-radius: 2.4mm; }
+.say .v { font-style: italic; }
+.foot { margin-top: 2mm; font: 500 6pt/1.2 "DM Mono", monospace; color: var(--ink2); text-align: center; }
+.notes { flex: 1; margin: 1.5mm 0 2.5mm; padding-top: 1.7mm; min-height: 12mm; background: repeating-linear-gradient(to bottom, transparent 0 6.6mm, rgba(31,51,40,.22) 6.6mm 6.85mm); background-position: 0 3.6mm; }
+.blank .v { height: 7.5mm; border-bottom: .25mm solid rgba(31,51,40,.3); }
+.blank .cls { height: 11mm; border-bottom-style: double; }
+
+.c-violet { --rb: var(--violet); --rbink: #fff; --st: var(--violet); --kc: #6E47B8; }
+.c-pink { --rb: var(--pink); --rbink: #fff; --st: var(--pink); --kc: #C23A74; }
+.c-gold { --rb: var(--gold); --st: var(--gold); --kc: #A86E00; }
+.c-mint { --rb: var(--mint); --st: var(--mint); --kc: #1F8A6C; }
+
+@page { size: A4; margin: 0; }
+@media print { body { background: none; } .intro { display: none; } .page { margin: 0; break-after: page; } }
+</style>
+</head>
+<body>
+
+<p class="intro"><b>Character sheets.</b> A persona, pointed at a colleague. Print at actual size: four cards per A4 sheet, cut along the dashed lines. The filled-in cards are starting points; swap in what you know about the real people you work with. The blank card is for your own.</p>
+
+<div class="page">
+  <div class="cell"><div class="sheet c-mint">
+    <div class="ribbon">Character sheet</div>
+    <div class="cls">Product Manager</div>
+    <div class="row"><div class="k">Goals</div><div class="v">Ship the roadmap item. Keep the promises made to leadership and customers.</div></div>
+    <div class="row"><div class="k">Fears</div><div class="v">Slipping a date in front of leadership. Surprises late in the cycle.</div></div>
+    <div class="row"><div class="k">Perception <span>· notices first</span></div><div class="v">Dates, scope, customer impact. In that order.</div></div>
+    <div class="row"><div class="k">Currency <span>· what convinces them</span></div><div class="v">Customer and revenue risk.</div></div>
+    <div class="notes"><div class="k">Notes <span>· what you know about the real person</span></div></div>
+    <div class="say"><div class="k">Say it like this</div><div class="v">"This puts checkout conversion at risk. Fixing now costs 3 days; shipping as is risks about £X a day."</div></div>
+    <div class="foot">The player and the character · Put on the costume, borrow the view.</div>
+  </div></div>
+
+  <div class="cell"><div class="sheet c-violet">
+    <div class="ribbon">Character sheet</div>
+    <div class="cls">Developer</div>
+    <div class="row"><div class="k">Goals</div><div class="v">Ship clean code, stay in flow, keep learning.</div></div>
+    <div class="row"><div class="k">Fears</div><div class="v">Vague bug reports. Endless rework. Being blamed for things outside their control.</div></div>
+    <div class="row"><div class="k">Perception <span>· notices first</span></div><div class="v">Repro steps, logs, the line of code.</div></div>
+    <div class="row"><div class="k">Currency <span>· what convinces them</span></div><div class="v">A precise repro, and respect for their constraints.</div></div>
+    <div class="notes"><div class="k">Notes <span>· what you know about the real person</span></div></div>
+    <div class="say"><div class="k">Say it like this</div><div class="v">"Fails at step 4, only with saved cards. Logs attached. Happy to pair on it."</div></div>
+    <div class="foot">The player and the character · Put on the costume, borrow the view.</div>
+  </div></div>
+
+  <div class="cell"><div class="sheet c-pink">
+    <div class="ribbon">Character sheet</div>
+    <div class="cls">Designer / UX</div>
+    <div class="row"><div class="k">Goals</div><div class="v">An experience that feels right and works for everyone.</div></div>
+    <div class="row"><div class="k">Fears</div><div class="v">Their intent getting lost in the build. Users finding the accessibility gaps first.</div></div>
+    <div class="row"><div class="k">Perception <span>· notices first</span></div><div class="v">Flows, feel, consistency.</div></div>
+    <div class="row"><div class="k">Currency <span>· what convinces them</span></div><div class="v">Real user behaviour: screenshots, recordings, quotes.</div></div>
+    <div class="notes"><div class="k">Notes <span>· what you know about the real person</span></div></div>
+    <div class="say"><div class="k">Say it like this</div><div class="v">"Screen reader users can't reach the pay button. Here's a 30-second recording."</div></div>
+    <div class="foot">The player and the character · Put on the costume, borrow the view.</div>
+  </div></div>
+
+  <div class="cell"><div class="sheet c-gold">
+    <div class="ribbon">Character sheet</div>
+    <div class="cls">Support</div>
+    <div class="row"><div class="k">Goals</div><div class="v">Fewer tickets, faster answers, happier customers.</div></div>
+    <div class="row"><div class="k">Fears</div><div class="v">Hearing about a change from a customer first.</div></div>
+    <div class="row"><div class="k">Perception <span>· notices first</span></div><div class="v">What customers will ask about, and how they'll describe it.</div></div>
+    <div class="row"><div class="k">Currency <span>· what convinces them</span></div><div class="v">An early heads-up, known issues and workarounds.</div></div>
+    <div class="notes"><div class="k">Notes <span>· what you know about the real person</span></div></div>
+    <div class="say"><div class="k">Say it like this</div><div class="v">"This ships Tuesday. Here's what might confuse people, and what to tell them."</div></div>
+    <div class="foot">The player and the character · Put on the costume, borrow the view.</div>
+  </div></div>
+</div>
+
+<div class="page">
+  <div class="cell"><div class="sheet c-mint">
+    <div class="ribbon">Character sheet</div>
+    <div class="cls">Ops / SRE</div>
+    <div class="row"><div class="k">Goals</div><div class="v">Stable systems and quiet nights.</div></div>
+    <div class="row"><div class="k">Fears</div><div class="v">3am pages. Surprises in production.</div></div>
+    <div class="row"><div class="k">Perception <span>· notices first</span></div><div class="v">Failure modes, monitoring, rollback.</div></div>
+    <div class="row"><div class="k">Currency <span>· what convinces them</span></div><div class="v">Blast radius and a rollback plan.</div></div>
+    <div class="notes"><div class="k">Notes <span>· what you know about the real person</span></div></div>
+    <div class="say"><div class="k">Say it like this</div><div class="v">"If this fails, it fails here. This alert tells us, and rollback takes five minutes."</div></div>
+    <div class="foot">The player and the character · Put on the costume, borrow the view.</div>
+  </div></div>
+
+  <div class="cell"><div class="sheet c-violet">
+    <div class="ribbon">Character sheet</div>
+    <div class="cls">Head of Engineering</div>
+    <div class="row"><div class="k">Goals</div><div class="v">Delivery the business trusts. A healthy, growing team.</div></div>
+    <div class="row"><div class="k">Fears</div><div class="v">Incidents that reach the board. Burnout.</div></div>
+    <div class="row"><div class="k">Perception <span>· notices first</span></div><div class="v">Trends, not tickets.</div></div>
+    <div class="row"><div class="k">Currency <span>· what convinces them</span></div><div class="v">Risk patterns and trade-offs, on one slide.</div></div>
+    <div class="notes"><div class="k">Notes <span>· what you know about the real person</span></div></div>
+    <div class="say"><div class="k">Say it like this</div><div class="v">"Three releases running, checkout is where issues escape. Here's what would change that."</div></div>
+    <div class="foot">The player and the character · Put on the costume, borrow the view.</div>
+  </div></div>
+
+  <div class="cell"><div class="sheet c-pink">
+    <div class="ribbon">Character sheet</div>
+    <div class="cls">Exec / Sponsor</div>
+    <div class="row"><div class="k">Goals</div><div class="v">Outcomes, growth, reputation.</div></div>
+    <div class="row"><div class="k">Fears</div><div class="v">Public failure. Wasted spend.</div></div>
+    <div class="row"><div class="k">Perception <span>· notices first</span></div><div class="v">Headlines and numbers.</div></div>
+    <div class="row"><div class="k">Currency <span>· what convinces them</span></div><div class="v">Money, customers and reputation, in one sentence.</div></div>
+    <div class="notes"><div class="k">Notes <span>· what you know about the real person</span></div></div>
+    <div class="say"><div class="k">Say it like this</div><div class="v">"Shipping now risks about £X and a bad week on social media. One more week removes that."</div></div>
+    <div class="foot">The player and the character · Put on the costume, borrow the view.</div>
+  </div></div>
+
+  <div class="cell"><div class="sheet blank c-gold">
+    <div class="ribbon">Character sheet</div>
+    <div class="cls"></div>
+    <div class="row"><div class="k">Goals</div><div class="v"></div></div>
+    <div class="row"><div class="k">Fears</div><div class="v"></div></div>
+    <div class="row"><div class="k">Perception <span>· notices first</span></div><div class="v"></div></div>
+    <div class="row"><div class="k">Currency <span>· what convinces them</span></div><div class="v"></div></div>
+    <div class="notes"><div class="k">Notes <span>· what you know about the real person</span></div></div>
+    <div class="say"><div class="k">Say it like this</div><div class="v"></div></div>
+    <div class="foot">The player and the character · Put on the costume, borrow the view.</div>
+  </div></div>
+</div>
+
+</body></html>

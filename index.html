@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QA as Cosplay</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&amp;family=Fraunces:opsz,wght@9..144,700..900&amp;family=DM+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<style>
+:root { --paper: #EEF1E2; --ink: #1F3328; --ink2: #4A5E52; --card: #FFFDF6; --pink: #E8508F; --gold: #F5B83D; --mint: #3CC4A0; --violet: #8A63D2; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { min-height: 100vh; background: repeating-linear-gradient(90deg, rgba(60,196,160,.11) 0 48px, transparent 48px 96px), var(--paper);
+  color: var(--ink); font: 18px/1.5 "Atkinson Hyperlegible", system-ui, sans-serif; padding: 48px 16px; }
+main { max-width: 760px; margin: 0 auto; }
+.ribbon { display: inline-block; padding: 9px 26px; font: 700 13px/1 "Atkinson Hyperlegible"; letter-spacing: .16em; text-transform: uppercase;
+  background: var(--violet); color: #fff; border-top: 3px solid var(--ink); border-bottom: 3px solid var(--ink);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 50%, 100% 100%, 0 100%, 12px 50%); }
+h1 { margin-top: 18px; font: 900 clamp(48px, 10vw, 88px)/.95 Fraunces, Georgia, serif; letter-spacing: -.02em; }
+.sub { margin-top: 14px; font: 700 clamp(20px, 4vw, 28px)/1.2 Fraunces, Georgia, serif; color: var(--ink2); }
+.cards { margin-top: 40px; display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+a.card { position: relative; display: block; text-decoration: none; color: inherit; background: var(--card); border: 4px solid var(--ink); border-radius: 22px;
+  padding: 24px 26px; box-shadow: 8px 8px 0 var(--ink); transition: transform .15s, box-shadow .15s; }
+a.card::after { content: ""; position: absolute; inset: 8px; border: 2.5px dashed var(--st, var(--pink)); border-radius: 14px; pointer-events: none; }
+a.card:hover, a.card:focus-visible { transform: translate(-2px,-2px); box-shadow: 10px 10px 0 var(--ink); }
+.k { font: 500 12px/1 "DM Mono", monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--ink2); }
+.t { margin-top: 10px; font: 800 30px/1.05 Fraunces, Georgia, serif; }
+.d { margin-top: 10px; font-size: 17px; color: var(--ink2); }
+footer { margin-top: 48px; font-size: 15px; color: var(--ink2); }
+</style>
+</head>
+<body>
+<main>
+  <span class="ribbon">SE Quality Meetup · 2026</span>
+  <h1>QA as Cosplay</h1>
+  <p class="sub">Practising skills before you need them</p>
+  <div class="cards">
+    <a class="card" href="Deck.html"><div class="k">Slides</div><div class="t">The deck</div><div class="d">Arrow keys or tap to move through. Press N for speaker notes.</div></a>
+    <a class="card" href="Character%20sheets.html" style="--st:var(--mint)"><div class="k">Printable</div><div class="t">Character sheets</div><div class="d">Persona cards for the people you work with, plus a blank. Print at 100% on A4.</div></a>
+  </div>
+  <footer>Luke LR · Come and ask me about a pin.</footer>
+</main>
+</body></html>
