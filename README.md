@@ -7,3 +7,9 @@
 - **[Character sheets](Character%20sheets.html)**: printable persona cards for common roles, plus a blank. Print at 100% on A4.
 
 Pins credited on the slides. Photos © Luke LR unless noted.
+
+## Also at this meetup: Durable skills in QA
+
+*Cross-team communication, influence and judgement, from the lead's seat and the engineer's seat.* By **Jakub Koczorski**, shared here with his permission.
+
+- **[Slides as PDF](Durable-Skills-in-QA.pdf)**
